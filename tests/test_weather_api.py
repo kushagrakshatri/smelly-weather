@@ -1,6 +1,7 @@
+import requests
 import pytest
 from unittest.mock import patch, Mock
-from datetime import datetime
+from datetime import datetime, timezone
 import pandas as pd
 from src.extractors.weather_api import WeatherDataExtractor, WeatherData
 
@@ -32,7 +33,7 @@ def test_weather_data_model_valid():
 
     data = WeatherData(
         city = "London",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         temperature=20.5,
         humidity=65,
         pressure=1013,
@@ -49,7 +50,7 @@ def test_weather_data_model_invalid():
     with pytest.raises(ValueError):
         WeatherData(
             city = "London",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             temperature=150,
             humidity=65,
             pressure=1013,
@@ -124,4 +125,4 @@ def test_validate_api_key(mock_get, weather_extractor, sample_weather_response):
     assert weather_extractor.validate_api_key() is True
 
     mock_get.side_effect = requests.exceptions.RequestException
-    assert weather_extractor.validate_api_key is False
+    assert weather_extractor.validate_api_key() is False
