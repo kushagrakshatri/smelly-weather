@@ -1,6 +1,6 @@
 import requests
 from typing import Optional, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 import pandas as pd
 from pydantic import BaseModel, Field
 import logging
@@ -76,7 +76,7 @@ class WeatherDataExtractor:
         try:
             weather_data = WeatherData(
                 city=city,
-                timestamp=datetime.utcnow,
+                timestamp=datetime.now(timezone.utc),
                 temperature=raw_data['main']['temp'],
                 humidity=raw_data['main']['humidity'],
                 pressure=raw_data['main']['pressure'],
